@@ -10,7 +10,7 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
     <header class="bg-blue-700 text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="bg-white/10 p-2.5 rounded-xl">
                     <i class="fa-solid fa-graduation-cap text-2xl"></i>
@@ -22,7 +22,7 @@
             </div>
             <div class="text-xs bg-blue-800/60 px-3 py-1.5 rounded-full border border-blue-600 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>GitHub Terhubung Otomatis</span>
+                <span>GitHub Terhubung</span>
             </div>
         </div>
     </header>
@@ -35,6 +35,7 @@
     </div>
 
     <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+        <!-- Profil Mahasiswa -->
         <section class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
             <div class="absolute -right-6 -bottom-6 opacity-10">
                 <i class="fa-solid fa-laptop-code text-9xl"></i>
@@ -55,7 +56,8 @@
             </div>
         </section>
 
-        <div class="flex border-b border-slate-200 overflow-x-auto scrollbar-none">
+        <!-- Tab Navigasi -->
+        <div class="flex border-b border-slate-200 overflow-x-auto">
             <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-5 py-3 font-semibold text-sm border-b-2 border-blue-600 text-blue-600 flex items-center gap-2 whitespace-nowrap transition">
                 <i class="fa-solid fa-house"></i> Dashboard
             </button>
@@ -95,7 +97,7 @@
         <div id="panel-materi" class="space-y-6 hidden">
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                 <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Upload Materi Perkuliahan
+                    <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Tambah Materi Kuliah
                 </h3>
                 <form id="form-materi" onsubmit="handleUploadMateri(event)" class="space-y-4">
                     <div>
@@ -112,15 +114,13 @@
                             <input type="text" id="materi-link" required placeholder="https://..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
                         </div>
                     </div>
-                    <button type="submit" id="btn-submit-materi" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-upload"></i> Simpan Materi ke GitHub
+                    <button type="submit" id="btn-submit-materi" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm shadow-sm">
+                        Simpan Materi ke GitHub
                     </button>
                 </form>
             </div>
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-list text-blue-600"></i> Daftar Materi Kuliah
-                </h3>
+                <h3 class="font-bold text-slate-800 mb-4">Daftar Materi Kuliah</h3>
                 <div id="list-materi" class="space-y-3">
                     <p class="text-sm text-slate-400 text-center py-4">Memuat data...</p>
                 </div>
@@ -140,23 +140,21 @@
                             <input type="text" id="tugas-keterangan" required placeholder="Contoh: Tugas 1 s/d 4" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Link File Tugas (Google Drive / Lainnya)</label>
-                            <input type="text" id="tugas-link" required placeholder="Tempel link Google Drive file tugas..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Link File Tugas (Google Drive)</label>
+                            <input type="text" id="tugas-link" required placeholder="Tempel link file tugas di sini..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Catatan Tambahan (Opsional)</label>
                             <textarea id="tugas-catatan" rows="2" placeholder="Catatan singkat..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"></textarea>
                         </div>
-                        <button type="submit" id="btn-submit-tugas" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan Tugas ke GitHub
+                        <button type="submit" id="btn-submit-tugas" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm shadow-sm">
+                            Simpan Tugas ke GitHub
                         </button>
                     </form>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-list text-blue-600"></i> Daftar Tugas Tersimpan
-                    </h3>
+                    <h3 class="font-bold text-slate-800">Daftar Tugas Tersimpan</h3>
                     <div id="list-tugas" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                         <p class="text-sm text-slate-400 text-center py-4">Memuat data...</p>
                     </div>
@@ -282,7 +280,7 @@
                         ${item.catatan ? `<p class="text-sm text-slate-600">${item.catatan}</p>` : ''}
                         ${item.tugasLink ? `
                             <a href="${item.tugasLink}" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-100 transition">
-                                <i class="fa-solid fa-file-arrow-down"></i> Buka File Tugas (Google Drive)
+                                <i class="fa-solid fa-file-arrow-down"></i> Buka File Tugas
                             </a>
                         ` : ''}
                     </div>
