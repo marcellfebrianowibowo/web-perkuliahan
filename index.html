@@ -102,7 +102,7 @@
                 <form id="form-materi" onsubmit="handleUploadMateri(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Judul Materi</label>
-                        <input type="text" id="materi-judul" required placeholder="Contoh: Modul 1 - Pengantar Sistem Informasi" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                        <input type="text" id="materi-judul" required placeholder="Contoh: Modul 1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -127,12 +127,12 @@
             </div>
         </div>
 
-        <!-- Pengumpulan Tugas -->
+        <!-- Pengumpulan Tugas (Dengan Choose File) -->
         <div id="panel-tugas" class="space-y-6 hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Simpan Tugas Kuliah
+                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Upload File Tugas
                     </h3>
                     <form id="form-tugas" onsubmit="handleUploadTugas(event)" class="space-y-4">
                         <div>
@@ -140,21 +140,21 @@
                             <input type="text" id="tugas-keterangan" required placeholder="Contoh: Tugas 1 s/d 4" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Link File Tugas (Google Drive)</label>
-                            <input type="text" id="tugas-link" required placeholder="Tempel link file tugas di sini..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pilih File (PDF / Word / Foto)</label>
+                            <input type="file" id="tugas-file" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Catatan Tambahan (Opsional)</label>
                             <textarea id="tugas-catatan" rows="2" placeholder="Catatan singkat..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"></textarea>
                         </div>
                         <button type="submit" id="btn-submit-tugas" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm shadow-sm">
-                            Simpan Tugas ke GitHub
+                            Upload File ke GitHub
                         </button>
                     </form>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800">Daftar Tugas Tersimpan</h3>
+                    <h3 class="font-bold text-slate-800">Daftar Tugas Terunggah</h3>
                     <div id="list-tugas" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                         <p class="text-sm text-slate-400 text-center py-4">Memuat data...</p>
                     </div>
@@ -238,6 +238,43 @@
             return await response.json();
         }
 
+        // Fungsi khusus upload file fisik ke folder uploads/ di GitHub
+        async function uploadBinaryFileToGitHub(file, path) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async function () {
+                    try {
+                        const base64Content = reader.result.split(',')[1];
+                        const url = `https://api.github.com/repos/${GH_CONFIG.username}/${GH_CONFIG.repo}/contents/${path}`;
+                        
+                        let fileSha = null;
+                        const checkRes = await fetch(url, { headers: { 'Authorization': `token ${GH_CONFIG.token}` } });
+                        if (checkRes.ok) {
+                            const checkJson = await checkRes.json();
+                            fileSha = checkJson.sha;
+                        }
+
+                        const body = { message: `Upload file: ${file.name}`, content: base64Content };
+                        if (fileSha) body.sha = fileSha;
+
+                        const putRes = await fetch(url, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${GH_CONFIG.token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body)
+                        });
+
+                        if (!putRes.ok) throw new Error('Gagal mengupload file fisik');
+                        const putJson = await putRes.json();
+                        resolve(putJson.content.download_url);
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
         async function loadAllData() {
             try {
                 const materiRes = await fetchGitHubFile('materi.json');
@@ -270,7 +307,7 @@
                 `).join('');
 
             const listTugas = document.getElementById('list-tugas');
-            listTugas.innerHTML = appData.tugas.length === 0 ? '<p class="text-sm text-slate-400 text-center py-4">Belum ada tugas tersimpan.</p>' :
+            listTugas.innerHTML = appData.tugas.length === 0 ? '<p class="text-sm text-slate-400 text-center py-4">Belum ada tugas terunggah.</p>' :
                 appData.tugas.map(item => `
                     <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-2">
                         <div class="flex justify-between items-start">
@@ -278,9 +315,9 @@
                             <span class="text-xs text-slate-400">${item.tanggal || ''}</span>
                         </div>
                         ${item.catatan ? `<p class="text-sm text-slate-600">${item.catatan}</p>` : ''}
-                        ${item.tugasLink ? `
-                            <a href="${item.tugasLink}" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-100 transition">
-                                <i class="fa-solid fa-file-arrow-down"></i> Buka File Tugas
+                        ${item.fileUrl ? `
+                            <a href="${item.fileUrl}" target="_blank" class="inline-flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-100 transition">
+                                <i class="fa-solid fa-file-arrow-down"></i> Download File (${item.fileName || 'Lampiran'})
                             </a>
                         ` : ''}
                     </div>
@@ -315,25 +352,35 @@
         async function handleUploadTugas(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit-tugas');
-            btn.disabled = true; btn.innerHTML = `Menyimpan...`;
+            btn.disabled = true; btn.innerHTML = `Mengunggah File...`;
             try {
                 const keterangan = document.getElementById('tugas-keterangan').value;
-                const tugasLink = document.getElementById('tugas-link').value;
                 const catatan = document.getElementById('tugas-catatan').value;
+                const fileInput = document.getElementById('tugas-file');
+                const file = fileInput.files[0];
                 const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                let fileUrl = '';
+                let fileName = '';
+
+                if (file) {
+                    fileName = file.name;
+                    const safeFileName = `tugas_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
+                    fileUrl = await uploadBinaryFileToGitHub(file, `uploads/${safeFileName}`);
+                }
 
                 const res = await fetchGitHubFile('tugas.json');
                 const currentData = Array.isArray(res.data) ? res.data : [];
-                currentData.unshift({ keterangan, tugasLink, catatan, tanggal });
-                await saveGitHubFile('tugas.json', currentData, res.sha, 'Tambah tugas baru');
+                currentData.unshift({ keterangan, catatan, fileName, fileUrl, tanggal });
+                await saveGitHubFile('tugas.json', currentData, res.sha, 'Upload tugas dengan file fisik');
 
                 document.getElementById('form-tugas').reset();
                 await loadAllData();
-                showAlert('Tugas berhasil disimpan ke GitHub!');
+                showAlert('File tugas berhasil diunggah ke GitHub!');
             } catch (err) {
                 showAlert(err.message, 'error');
             } finally {
-                btn.disabled = false; btn.innerHTML = `Simpan Tugas ke GitHub`;
+                btn.disabled = false; btn.innerHTML = `Upload File ke GitHub`;
             }
         }
 
