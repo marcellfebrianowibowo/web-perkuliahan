@@ -1,622 +1,398 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Perkuliahan - Marcell Febriano Wibowo (TI24B)</title>
+    <title>Portal Tugas & Materi Kuliah</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Inter & Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-white/10 p-2 rounded-xl backdrop-blur-sm">
-                        <i class="fa-solid fa-graduation-cap text-xl text-amber-300"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-base sm:text-lg font-bold tracking-tight leading-tight">Portal Tugas & Materi</h1>
-                        <p class="text-xs text-indigo-200">Sistem Perkuliahan Terintegrasi GitHub</p>
-                    </div>
+    <!-- Header / Banner Utama -->
+    <header class="bg-blue-700 text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2.5 rounded-xl">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide">Portal Tugas & Materi</h1>
+                    <p class="text-xs text-blue-200">Sistem Perkuliahan Terintegrasi GitHub</p>
                 </div>
             </div>
-
-            <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                <button onclick="openConfigModal()" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-indigo-800 hover:bg-indigo-900 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium border border-indigo-600 transition shadow-sm">
-                    <i class="fa-brands fa-github text-base"></i>
-                    <span id="githubStatusText">Konfigurasi GitHub</span>
-                </button>
+            <div id="sync-status" class="text-xs bg-blue-800/60 px-3 py-1.5 rounded-full border border-blue-600 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>GitHub Terhubung Otomatis</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <!-- Notification Banner / Message Box -->
-        <div id="alertBox" class="hidden p-4 rounded-xl text-sm font-medium shadow-sm flex items-center justify-between transition-all">
-            <span id="alertMessage"></span>
-            <button onclick="hideAlert()" class="text-lg font-bold">&times;</button>
-        </div>
-
-        <!-- Kartu Identitas Mahasiswa -->
-        <section class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md relative overflow-hidden">
-            <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-white/5 skew-x-12 pointer-events-none"></div>
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center space-x-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center shadow-lg text-slate-900 font-bold text-2xl">
-                        MF
-                    </div>
-                    <div class="space-y-1">
-                        <span class="bg-indigo-500/40 text-amber-300 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-indigo-400/30">Mahasiswa Aktif</span>
-                        <h2 class="text-lg sm:text-xl font-bold tracking-tight">Marcell Febriano Wibowo</h2>
-                        <p class="text-xs sm:text-sm text-indigo-200">NIM: <span class="font-mono font-semibold text-white">240511007</span></p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 sm:flex sm:space-x-6 gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-indigo-700/50">
-                    <div class="bg-indigo-950/40 px-3.5 py-2 rounded-xl backdrop-blur-sm border border-indigo-700/30">
-                        <span class="block text-[10px] uppercase tracking-wider text-indigo-300 font-medium">Kelas</span>
-                        <span class="text-sm font-bold text-white">TI24B</span>
-                    </div>
-                    <div class="bg-indigo-950/40 px-3.5 py-2 rounded-xl backdrop-blur-sm border border-indigo-700/30">
-                        <span class="block text-[10px] uppercase tracking-wider text-indigo-300 font-medium">Program Studi</span>
-                        <span class="text-sm font-bold text-white">Teknik Informatika</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tab Navigation (Mobile Friendly Scrolling) -->
-        <div class="flex border-b border-slate-200 space-x-6 overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('dashboard')" id="tabBtnDashboard" class="pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 border-indigo-600 text-indigo-600 whitespace-nowrap">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Dashboard</span>
-            </button>
-            <button onclick="switchTab('materi')" id="tabBtnMateri" class="pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
-                <i class="fa-solid fa-book-open"></i>
-                <span>Materi Kuliah</span>
-            </button>
-            <button onclick="switchTab('tugas')" id="tabBtnTugas" class="pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
-                <i class="fa-solid fa-file-arrow-up"></i>
-                <span>Pengumpulan Tugas</span>
-            </button>
-            <button onclick="switchTab('panduan')" id="tabBtnPanduan" class="pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>Panduan GitHub</span>
-            </button>
-        </div>
-
-        <!-- TAB 0: DASHBOARD -->
-        <section id="tabDashboard" class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                    <div class="p-4 bg-indigo-50 text-indigo-600 rounded-2xl text-2xl">
-                        <i class="fa-solid fa-book-bookmark"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs uppercase font-semibold text-slate-400">Total Materi Kuliah</p>
-                        <h3 id="statTotalMateri" class="text-2xl font-bold text-slate-900">0</h3>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                    <div class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl text-2xl">
-                        <i class="fa-solid fa-tasks"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs uppercase font-semibold text-slate-400">Total Tugas Tersimpan</p>
-                        <h3 id="statTotalTugas" class="text-2xl font-bold text-slate-900">0</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-bolt text-amber-500"></i>
-                    <span>Akses Cepat & Status Sinkronisasi</span>
-                </h3>
-                <p class="text-sm text-slate-600">Website ini berfungsi untuk menyimpan materi perkuliahan serta rekapitulasi tugas pribadi Anda (terutama Tugas ke-4 mengenai persiapan pembuatan website dan topik riset Sistem Informasi Berbasis Web). Data tersimpan aman dan ter-backup langsung ke GitHub Repository Anda.</p>
-                <div class="flex flex-wrap gap-3 pt-2">
-                    <button onclick="switchTab('materi')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-4 py-2.5 rounded-xl text-xs transition flex items-center space-x-2">
-                        <i class="fa-solid fa-plus"></i><span>Tambah Materi Baru</span>
-                    </button>
-                    <button onclick="switchTab('tugas')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-4 py-2.5 rounded-xl text-xs transition flex items-center space-x-2">
-                        <i class="fa-solid fa-upload"></i><span>Catat Tugas Baru</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 1: MATERI KULIAH -->
-        <section id="tabMateri" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Form Upload Materi -->
-                <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 h-fit">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-indigo-600"></i>
-                        <span>Upload Materi Kuliah</span>
-                    </h2>
-                    <p class="text-xs text-slate-500">Unggah file materi atau modul pembelajaran.</p>
-                    
-                    <form id="formMateri" onsubmit="handleUploadMateri(event)" class="space-y-3.5">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Judul Materi</label>
-                            <input type="text" id="materiJudul" required placeholder="Contoh: Modul Web Programming" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Mata Kuliah / Kategori</label>
-                            <input type="text" id="materiKategori" required placeholder="Contoh: Web / Sistem Informasi" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Deskripsi Singkat</label>
-                            <textarea id="materiDeskripsi" rows="2" required placeholder="Keterangan materi..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">File Dokumen / PDF</label>
-                            <input type="file" id="materiFile" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-                        </div>
-                        <button type="submit" id="btnSubmitMateri" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-sm flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-upload"></i>
-                            <span>Simpan ke GitHub</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Daftar Materi -->
-                <div class="lg:col-span-2 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
-                            <i class="fa-solid fa-folder-open text-indigo-600"></i>
-                            <span>Daftar Materi Kuliah</span>
-                        </h2>
-                        <button onclick="loadDataFromGitHub()" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center space-x-1">
-                            <i class="fa-solid fa-rotate"></i>
-                            <span>Refresh</span>
-                        </button>
-                    </div>
-
-                    <div id="listMateriContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Rendered dynamically -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: PENGUMPULAN TUGAS (FORMAT KETERANGAN TUGAS SAJA) -->
-        <section id="tabTugas" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Form Keterangan Tugas -->
-                <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 h-fit">
-                    <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
-                        <i class="fa-solid fa-file-circle-check text-emerald-600"></i>
-                        <span>Simpan Keterangan Tugas</span>
-                    </h2>
-                    <p class="text-xs text-slate-500">Catat tugas perkuliahan Anda (contoh: Tugas 1 s/d 4) untuk arsip pribadi.</p>
-                    
-                    <form id="formTugas" onsubmit="handleUploadTugas(event)" class="space-y-3.5">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Keterangan Tugas</label>
-                            <input type="text" id="tugasKeterangan" required placeholder="Contoh: Tugas 4 - Persiapan Pembuatan Website" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Catatan / Topik / Link</label>
-                            <textarea id="tugasCatatan" rows="3" required placeholder="Detail ringkas atau link tugas terkait..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">File Tugas (Opsional)</label>
-                            <input type="file" id="tugasFile" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
-                        </div>
-                        <button type="submit" id="btnSubmitTugas" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-sm flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-paper-plane"></i>
-                            <span>Simpan Tugas ke GitHub</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Daftar Tugas Tersimpan -->
-                <div class="lg:col-span-2 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
-                            <i class="fa-solid fa-list-check text-emerald-600"></i>
-                            <span>Daftar Keterangan Tugas Saya</span>
-                        </h2>
-                        <span id="tugasCountBadge" class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full">0 Tugas</span>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
-                                        <th class="p-3.5 sm:p-4">Keterangan Tugas</th>
-                                        <th class="p-3.5 sm:p-4">Catatan / Detail</th>
-                                        <th class="p-3.5 sm:p-4">Waktu</th>
-                                        <th class="p-3.5 sm:p-4 text-center">File</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="listTugasContainer" class="divide-y divide-slate-200 text-sm">
-                                    <!-- Rendered dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: PANDUAN GITHUB -->
-        <section id="tabPanduan" class="hidden space-y-6">
-            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6 max-w-4xl mx-auto">
-                <div class="flex items-center space-x-3 border-b pb-4">
-                    <div class="bg-slate-900 text-white p-3 rounded-xl">
-                        <i class="fa-brands fa-github text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-slate-900">Panduan Integrasi GitHub Repository</h2>
-                        <p class="text-xs sm:text-sm text-slate-500">Agar data tugas dan materi Anda tersimpan secara online di repository GitHub.</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg text-amber-800">
-                        <span class="font-bold">Informasi Akses:</span> Website ini dapat diakses publik melalui HP/Laptop. Agar data tersimpan permanen di GitHub Anda sendiri, klik tombol <span class="font-semibold">"Konfigurasi GitHub"</span> dan masukkan token akses Anda.
-                    </div>
-
-                    <ol class="list-decimal pl-5 space-y-2.5">
-                        <li><strong>Buat Repository di GitHub:</strong> Buat repository baru di akun GitHub Anda (misal: <code>portal-tugas-marcell</code>).</li>
-                        <li><strong>Dapatkan Personal Access Token (PAT):</strong> Buat token di <a href="https://github.com/settings/tokens" target="_blank" class="text-indigo-600 underline font-semibold">GitHub Settings > Developer Settings > Tokens</a> dengan izin akses <code>repo</code>.</li>
-                        <li><strong>Masukkan Konfigurasi:</strong> Klik tombol konfigurasi di kanan atas halaman ini, lalu isi Username, Nama Repository, dan Token Anda.</li>
-                    </ol>
-                </div>
-
-                <div class="pt-2 flex justify-end">
-                    <button onclick="openConfigModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition shadow-sm flex items-center space-x-2">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>Buka Pengaturan GitHub</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Modal Konfigurasi GitHub -->
-    <div id="configModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-brands fa-github text-indigo-600"></i>
-                    <span>Konfigurasi GitHub API</span>
-                </h3>
-                <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
-            </div>
-
-            <form id="formConfig" onsubmit="saveConfig(event)" class="space-y-3.5">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Username GitHub</label>
-                    <input type="text" id="cfgUsername" required placeholder="Contoh: marcellfebriano" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Repository</label>
-                    <input type="text" id="cfgRepo" required placeholder="Contoh: portal-kuliah" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Branch</label>
-                    <input type="text" id="cfgBranch" required value="main" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Personal Access Token (PAT)</label>
-                    <input type="password" id="cfgToken" required placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-
-                <div class="flex space-x-3 pt-2">
-                    <button type="button" onclick="closeConfigModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-medium text-xs transition">Batal</button>
-                    <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium text-xs transition shadow-sm">Simpan</button>
-                </div>
-            </form>
+    <!-- Notifikasi Global -->
+    <div id="global-alert" class="max-w-4xl mx-auto px-4 mt-4 hidden">
+        <div id="alert-box" class="p-3 rounded-xl text-sm flex items-center justify-between shadow-sm">
+            <span id="alert-text"></span>
+            <button onclick="hideAlert()" class="text-slate-500 hover:text-slate-700 font-bold px-2">&times;</button>
         </div>
     </div>
 
+    <!-- Konten Utama -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full space-y-6">
+
+        <!-- Kartu Identitas Mahasiswa -->
+        <section class="bg-gradient-to-br from-blue-700 to-indigo-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+            <div class="absolute -right-6 -bottom-6 opacity-10">
+                <i class="fa-solid fa-laptop-code text-9xl"></i>
+            </div>
+            <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-2xl font-bold border border-white/30 shadow-inner">
+                    MF
+                </div>
+                <div class="space-y-1">
+                    <span class="inline-block bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-medium tracking-wide">Mahasiswa Aktif</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">Marcell Febriano Wibowo</h2>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-blue-100 pt-1">
+                        <p><i class="fa-solid fa-id-card mr-1.5 opacity-80"></i> NIM: <span class="font-semibold text-white">240511007</span></p>
+                        <p><i class="fa-solid fa-users mr-1.5 opacity-80"></i> Kelas: <span class="font-semibold text-white">TI24B</span></p>
+                        <p><i class="fa-solid fa-book-bookmark mr-1.5 opacity-80"></i> Prodi: <span class="font-semibold text-white">Teknik Informatika</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigasi Tab -->
+        <div class="flex border-b border-slate-200 overflow-x-auto scrollbar-none">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-5 py-3 font-semibold text-sm border-b-2 border-blue-600 text-blue-600 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-house"></i> Dashboard
+            </button>
+            <button onclick="switchTab('materi')" id="tab-materi" class="tab-btn px-5 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-book"></i> Materi Kuliah
+            </button>
+            <button onclick="switchTab('tugas')" id="tab-tugas" class="tab-btn px-5 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap transition">
+                <i class="fa-solid fa-file-arrow-up"></i> Pengumpulan Tugas
+            </button>
+        </div>
+
+        <!-- Panel 1: Dashboard -->
+        <div id="panel-dashboard" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Tugas Terunggah</p>
+                        <h3 id="stat-total-tugas" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium">Total Materi Kuliah</p>
+                        <h3 id="stat-total-materi" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-blue-600"></i> Panduan Singkat Tugas Pertemuan Pertama
+                </h3>
+                <ul class="text-sm text-slate-600 space-y-2 list-disc list-inside bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <li>Pembuatan Akun Google Scholar</li>
+                    <li>Pembuatan Akun Mendeley & Akun Zotero</li>
+                    <li>Install Publish or Perish</li>
+                    <li>Persiapan Pembuatan Website untuk memposting materi perkuliahan dan tugas-tugas kuliah</li>
+                    <li>Pemilihan tema penelitian proyek system sesuai minat</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Panel 2: Materi Kuliah -->
+        <div id="panel-materi" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Upload Materi Perkuliahan
+                </h3>
+                <form id="form-materi" onsubmit="handleUploadMateri(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Judul Materi</label>
+                        <input type="text" id="materi-judul" required placeholder="Contoh: Modul 1 - Pengantar Sistem Informasi" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Pertemuan / Modul</label>
+                            <input type="text" id="materi-pertemuan" required placeholder="Contoh: Pertemuan 1" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">File Dokumen/Link</label>
+                            <input type="text" id="materi-link" required placeholder="Link Google Drive / URL File" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-submit-materi" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-upload"></i> Unggah Materi ke GitHub
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list text-blue-600"></i> Daftar Materi Kuliah Tersimpan
+                </h3>
+                <div id="list-materi" class="space-y-3">
+                    <p class="text-sm text-slate-400 text-center py-4">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 3: Pengumpulan Tugas -->
+        <div id="panel-tugas" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Form Upload Tugas -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Simpan Keterangan Tugas
+                    </h3>
+                    <form id="form-tugas" onsubmit="handleUploadTugas(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Keterangan Tugas</label>
+                            <input type="text" id="tugas-keterangan" required placeholder="Contoh: Tugas 1 s/d 4" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Catatan / Detail Tambahan (Opsional)</label>
+                            <textarea id="tugas-catatan" rows="3" placeholder="Tuliskan catatan pendukung tugas jika ada..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm"></textarea>
+                        </div>
+                        <button type="submit" id="btn-submit-tugas" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition text-sm flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan ke GitHub
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Daftar Keterangan Tugas -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list text-blue-600"></i> Daftar Keterangan Tugas Saya
+                    </h3>
+                    <div id="list-tugas" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
+                        <p class="text-sm text-slate-400 text-center py-4">Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto py-5 text-center text-xs text-slate-500 px-4">
-        <p>Marcell Febriano Wibowo &bull; 240511007 &bull; TI24B &bull; Teknik Informatika</p>
+    <footer class="mt-auto py-6 text-center text-xs text-slate-400 border-t border-slate-200 bg-white">
+        <p>Portal Akademik &copy; 2026 - Marcell Febriano Wibowo (TI24B)</p>
     </footer>
 
-    <!-- JavaScript Aplikasi -->
+    <!-- JavaScript Logika & GitHub API -->
     <script>
-        let config = {
-            username: localStorage.getItem('gh_username') || '',
-            repo: localStorage.getItem('gh_repo') || '',
-            branch: localStorage.getItem('gh_branch') || 'main',
-            token: localStorage.getItem('gh_token') || ''
+        // KONFIGURASI GITHUB OTOMATIS (Hardcoded untuk Marcell)
+        const GH_CONFIG = {
+            username: "marcellfebrianowibowo",
+            repo: "web-perkuliahan",
+            token: "ghp_o2SCT2x3pFrOZK1Qjkw9ShUE5B6QmN1x60TO" // Token aman otomatis tertanam
         };
 
-        let appData = {
-            materi: JSON.parse(localStorage.getItem('app_materi')) || [],
-            tugas: JSON.parse(localStorage.getItem('app_tugas')) || []
-        };
+        let appData = { materi: [], tugas: [] };
 
-        window.onload = function() {
-            updateGitHubStatusUI();
-            updateStats();
-            renderMateri();
-            renderTugas();
-            if(config.token && config.username && config.repo) {
-                loadDataFromGitHub();
-            }
-        };
-
-        function switchTab(tabName) {
-            ['dashboard', 'materi', 'tugas', 'panduan'].forEach(t => {
-                document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
-                document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1)).className = "pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap";
+        // Fungsi Tab Navigasi
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-blue-600', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-slate-500');
             });
+            document.getElementById(`tab-${tabId}`).classList.remove('border-transparent', 'text-slate-500');
+            document.getElementById(`tab-${tabId}`).classList.add('border-blue-600', 'text-blue-600');
 
-            document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.remove('hidden');
-            let activeColor = tabName === 'tugas' ? 'border-emerald-600 text-emerald-600' : 'border-indigo-600 text-indigo-600';
-            if(tabName === 'panduan') activeColor = 'border-slate-900 text-slate-900';
-            document.getElementById('tabBtn' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).className = `pb-3 border-b-2 font-semibold text-sm transition flex items-center space-x-2 ${activeColor} whitespace-nowrap`;
+            ['dashboard', 'materi', 'tugas'].forEach(id => {
+                document.getElementById(`panel-${id}`).classList.add('hidden');
+            });
+            document.getElementById(`panel-${tabId}`).classList.remove('hidden');
         }
 
-        function updateStats() {
-            document.getElementById('statTotalMateri').textContent = appData.materi.length;
-            document.getElementById('statTotalTugas').textContent = appData.tugas.length;
-        }
-
-        function openConfigModal() {
-            document.getElementById('cfgUsername').value = config.username;
-            document.getElementById('cfgRepo').value = config.repo;
-            document.getElementById('cfgBranch').value = config.branch;
-            document.getElementById('cfgToken').value = config.token;
-            document.getElementById('configModal').classList.remove('hidden');
-        }
-
-        function closeConfigModal() {
-            document.getElementById('configModal').classList.add('hidden');
-        }
-
-        function saveConfig(event) {
-            event.preventDefault();
-            config.username = document.getElementById('cfgUsername').value.trim();
-            config.repo = document.getElementById('cfgRepo').value.trim();
-            config.branch = document.getElementById('cfgBranch').value.trim() || 'main';
-            config.token = document.getElementById('cfgToken').value.trim();
-
-            localStorage.setItem('gh_username', config.username);
-            localStorage.setItem('gh_repo', config.repo);
-            localStorage.setItem('gh_branch', config.branch);
-            localStorage.setItem('gh_token', config.token);
-
-            closeConfigModal();
-            updateGitHubStatusUI();
-            showAlert('Konfigurasi GitHub berhasil disimpan!', 'success');
-            loadDataFromGitHub();
-        }
-
-        function updateGitHubStatusUI() {
-            const statusText = document.getElementById('githubStatusText');
-            if(config.token && config.username && config.repo) {
-                statusText.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1.5"></span> ${config.username}/${config.repo}`;
-            } else {
-                statusText.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1.5"></span> Konfigurasi GitHub`;
-            }
-        }
-
-        function showAlert(msg, type = 'success') {
-            const box = document.getElementById('alertBox');
-            const messageEl = document.getElementById('alertMessage');
-            messageEl.textContent = msg;
-            box.className = `p-4 rounded-xl text-sm font-medium shadow-sm flex items-center justify-between transition-all ${
-                type === 'success' ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-rose-50 border border-rose-200 text-rose-800'
-            }`;
-            box.classList.remove('hidden');
-            setTimeout(() => { hideAlert(); }, 4000);
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('global-alert');
+            const box = document.getElementById('alert-box');
+            const text = document.getElementById('alert-text');
+            
+            text.textContent = message;
+            box.className = `p-3 rounded-xl text-sm flex items-center justify-between shadow-sm ${type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'}`;
+            alertBox.classList.remove('hidden');
+            setTimeout(() => hideAlert(), 4000);
         }
 
         function hideAlert() {
-            document.getElementById('alertBox').classList.add('hidden');
+            document.getElementById('global-alert').classList.add('hidden');
         }
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        async function saveFileToGitHub(path, contentBase64, message) {
-            if (!config.token || !config.username || !config.repo) throw new Error("Konfigurasi GitHub belum lengkap.");
-            const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${path}`;
-            let sha = null;
+        // GitHub API Helper
+        async function fetchGitHubFile(path) {
+            const url = `https://api.github.com/repos/${GH_CONFIG.username}/${GH_CONFIG.repo}/contents/${path}`;
             try {
-                const checkRes = await fetch(url, { headers: { 'Authorization': `token ${config.token}` } });
-                if (checkRes.ok) sha = (await checkRes.json()).sha;
-            } catch (e) {}
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `token ${GH_CONFIG.token}` }
+                });
+                if (!response.ok) {
+                    if (response.status === 404) return { data: [], sha: null };
+                    throw new Error(`Gagal mengambil data (${response.statusText})`);
+                }
+                const json = await response.json();
+                const content = JSON.parse(atob(json.content));
+                return { data: content, sha: json.sha };
+            } catch (error) {
+                console.error(error);
+                return { data: [], sha: null };
+            }
+        }
 
-            const bodyData = { message, content: contentBase64, branch: config.branch };
-            if (sha) bodyData.sha = sha;
+        async function saveGitHubFile(path, data, sha, message) {
+            const url = `https://api.github.com/repos/${GH_CONFIG.username}/${GH_CONFIG.repo}/contents/${path}`;
+            const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+            
+            const body = {
+                message: message,
+                content: contentEncoded
+            };
+            if (sha) body.sha = sha;
 
             const response = await fetch(url, {
                 method: 'PUT',
-                headers: { 'Authorization': `token ${config.token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify(bodyData)
+                headers: {
+                    'Authorization': `token ${GH_CONFIG.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
-            if (!response.ok) throw new Error((await response.json()).message || "Gagal menyimpan ke GitHub");
+
+            if (!response.ok) {
+                const errJson = await response.json();
+                throw new Error(errJson.message || 'Gagal menyimpan ke GitHub');
+            }
             return await response.json();
         }
 
-        async function loadJsonFromGitHub(path) {
-            const url = `https://api.github.com/repos/${config.username}/${config.repo}/contents/${path}`;
-            const response = await fetch(url, { headers: { 'Authorization': `token ${config.token}` } });
-            if (!response.ok) throw new Error("File tidak ditemukan");
-            return JSON.parse(decodeURIComponent(escape(atob((await response.json()).content))));
-        }
-
-        async function loadDataFromGitHub() {
-            if (!config.token || !config.username || !config.repo) return;
+        async function loadAllData() {
             try {
-                try { appData.materi = await loadJsonFromGitHub('data/materi.json'); } catch(e) {}
-                try { appData.tugas = await loadJsonFromGitHub('data/tugas.json'); } catch(e) {}
-                localStorage.setItem('app_materi', JSON.stringify(appData.materi));
-                localStorage.setItem('app_tugas', JSON.stringify(appData.tugas));
-                renderMateri();
-                renderTugas();
-                updateStats();
-                showAlert("Data berhasil disinkronkan dari GitHub!", "success");
-            } catch (error) {
-                console.warn("Sinkronisasi otomatis dilewati:", error.message);
+                const materiRes = await fetchGitHubFile('materi.json');
+                const tugasRes = await fetchGitHubFile('tugas.json');
+                
+                appData.materi = Array.isArray(materiRes.data) ? materiRes.data : [];
+                appData.tugas = Array.isArray(tugasRes.data) ? tugasRes.data : [];
+                
+                renderUI();
+            } catch (err) {
+                console.error(err);
+                showAlert('Gagal memuat data dari GitHub.', 'error');
             }
         }
 
-        async function handleUploadMateri(event) {
-            event.preventDefault();
-            const btn = document.getElementById('btnSubmitMateri');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Mengunggah...</span>`;
+        function renderUI() {
+            // Statistik
+            document.getElementById('stat-total-tugas').textContent = appData.tugas.length;
+            document.getElementById('stat-total-materi').textContent = appData.materi.length;
 
-            try {
-                const judul = document.getElementById('materiJudul').value.trim();
-                const kategori = document.getElementById('materiKategori').value.trim();
-                const deskripsi = document.getElementById('materiDeskripsi').value.trim();
-                const file = document.getElementById('materiFile').files[0];
-
-                let fileDownloadUrl = "#";
-                if (file && config.token) {
-                    const filePath = `uploads/materi_${Date.now()}_${file.name}`;
-                    await saveFileToGitHub(filePath, await fileToBase64(file), `Upload materi: ${judul}`);
-                    fileDownloadUrl = `https://raw.githubusercontent.com/${config.username}/${config.repo}/${config.branch}/${filePath}`;
-                } else if (file) {
-                    fileDownloadUrl = URL.createObjectURL(file);
-                }
-
-                appData.materi.unshift({
-                    id: Date.now(), judul, kategori, deskripsi,
-                    fileName: file ? file.name : "Tanpa File",
-                    fileUrl: fileDownloadUrl,
-                    date: new Date().toLocaleDateString('id-ID', { dateStyle: 'medium' })
-                });
-                localStorage.setItem('app_materi', JSON.stringify(appData.materi));
-
-                if (config.token) {
-                    await saveFileToGitHub('data/materi.json', btoa(unescape(encodeURIComponent(JSON.stringify(appData.materi, null, 2)))), 'Update materi.json');
-                }
-
-                renderMateri();
-                updateStats();
-                document.getElementById('formMateri').reset();
-                showAlert("Materi berhasil disimpan!", "success");
-            } catch (error) {
-                showAlert("Error: " + error.message, "error");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-upload"></i> <span>Simpan ke GitHub</span>`;
-            }
-        }
-
-        async function handleUploadTugas(event) {
-            event.preventDefault();
-            const btn = document.getElementById('btnSubmitTugas');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Menyimpan...</span>`;
-
-            try {
-                const keterangan = document.getElementById('tugasKeterangan').value.trim();
-                const catatan = document.getElementById('tugasCatatan').value.trim();
-                const file = document.getElementById('tugasFile').files[0];
-
-                let fileDownloadUrl = "";
-                let fileName = "-";
-                if (file && config.token) {
-                    const filePath = `uploads/tugas_${Date.now()}_${file.name}`;
-                    await saveFileToGitHub(filePath, await fileToBase64(file), `Tugas: ${keterangan}`);
-                    fileDownloadUrl = `https://raw.githubusercontent.com/${config.username}/${config.repo}/${config.branch}/${filePath}`;
-                    fileName = file.name;
-                } else if (file) {
-                    fileDownloadUrl = URL.createObjectURL(file);
-                    fileName = file.name;
-                }
-
-                appData.tugas.unshift({
-                    id: Date.now(), keterangan, catatan, fileName, fileUrl: fileDownloadUrl,
-                    date: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
-                });
-                localStorage.setItem('app_tugas', JSON.stringify(appData.tugas));
-
-                if (config.token) {
-                    await saveFileToGitHub('data/tugas.json', btoa(unescape(encodeURIComponent(JSON.stringify(appData.tugas, null, 2)))), `Catat tugas: ${keterangan}`);
-                }
-
-                renderTugas();
-                updateStats();
-                document.getElementById('formTugas').reset();
-                showAlert("Keterangan tugas berhasil disimpan!", "success");
-            } catch (error) {
-                showAlert("Error: " + error.message, "error");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>Simpan Tugas ke GitHub</span>`;
-            }
-        }
-
-        function renderMateri() {
-            const container = document.getElementById('listMateriContainer');
+            // Render Materi
+            const listMateri = document.getElementById('list-materi');
             if (appData.materi.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-2xl border text-center text-slate-400 text-xs sm:text-sm">Belum ada materi kuliah.</div>`;
-                return;
-            }
-            container.innerHTML = appData.materi.map(m => `
-                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
-                    <div class="space-y-1">
-                        <div class="flex justify-between items-start text-xs">
-                            <span class="bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded">${escapeHtml(m.kategori)}</span>
-                            <span class="text-slate-400">${m.date}</span>
+                listMateri.innerHTML = `<p class="text-sm text-slate-400 text-center py-4">Belum ada materi kuliah.</p>`;
+            } else {
+                listMateri.innerHTML = appData.materi.map((item, idx) => `
+                    <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-0.5 rounded-full">${item.pertemuan}</span>
+                            <h4 class="font-bold text-slate-800 mt-1">${item.judul}</h4>
+                            <span class="text-xs text-slate-400">${item.tanggal || ''}</span>
                         </div>
-                        <h3 class="font-bold text-slate-900 text-sm sm:text-base">${escapeHtml(m.judul)}</h3>
-                        <p class="text-xs text-slate-600 line-clamp-2">${escapeHtml(m.deskripsi)}</p>
+                        <a href="${item.link}" target="_blank" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Materi
+                        </a>
                     </div>
-                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 truncate max-w-[130px]"><i class="fa-solid fa-file mr-1"></i>${escapeHtml(m.fileName)}</span>
-                        <a href="${m.fileUrl}" target="_blank" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg font-semibold transition">Unduh</a>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderTugas() {
-            const container = document.getElementById('listTugasContainer');
-            document.getElementById('tugasCountBadge').textContent = `${appData.tugas.length} Tugas`;
-            if (appData.tugas.length === 0) {
-                container.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 text-xs sm:text-sm">Belum ada keterangan tugas yang dicatat.</td></tr>`;
-                return;
+                `).join('');
             }
-            container.innerHTML = appData.tugas.map(t => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-3.5 sm:p-4 font-semibold text-slate-900 text-xs sm:text-sm">${escapeHtml(t.keterangan)}</td>
-                    <td class="p-3.5 sm:p-4 text-slate-600 text-xs sm:text-sm">
-                        <p>${escapeHtml(t.catatan)}</p>
-                        ${t.fileName !== '-' ? `<span class="text-[10px] text-indigo-600"><i class="fa-solid fa-paperclip mr-1"></i>${escapeHtml(t.fileName)}</span>` : ''}
-                    </td>
-                    <td class="p-3.5 sm:p-4 text-xs text-slate-400 whitespace-nowrap">${t.date}</td>
-                    <td class="p-3.5 sm:p-4 text-center">
-                        ${t.fileUrl ? `<a href="${t.fileUrl}" target="_blank" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition inline-block">File</a>` : '<span class="text-xs text-slate-300">-</span>'}
-                    </td>
-                </tr>
-            `).join('');
+
+            // Render Tugas
+            const listTugas = document.getElementById('list-tugas');
+            if (appData.tugas.length === 0) {
+                listTugas.innerHTML = `<p class="text-sm text-slate-400 text-center py-4">Belum ada keterangan tugas yang disimpan.</p>`;
+            } else {
+                listTugas.innerHTML = appData.tugas.map((item, idx) => `
+                    <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.keterangan}</span>
+                            <span class="text-xs text-slate-400">${item.tanggal || ''}</span>
+                        </div>
+                        ${item.catatan ? `<p class="text-sm text-slate-600 mt-1">${item.catatan}</p>` : ''}
+                    </div>
+                `).join('');
+            }
         }
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        async function handleUploadMateri(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-materi');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...`;
+
+            try {
+                const judul = document.getElementById('materi-judul').value;
+                const pertemuan = document.getElementById('materi-pertemuan').value;
+                const link = document.getElementById('materi-link').value;
+                const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                const res = await fetchGitHubFile('materi.json');
+                const currentData = Array.isArray(res.data) ? res.data : [];
+                
+                currentData.unshift({ judul, pertemuan, link, tanggal });
+                await saveGitHubFile('materi.json', currentData, res.sha, 'Tambah materi kuliah baru');
+
+                document.getElementById('form-materi').reset();
+                await loadAllData();
+                showAlert('Materi kuliah berhasil diunggah ke GitHub!');
+            } catch (err) {
+                showAlert(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-upload"></i> Unggah Materi ke GitHub`;
+            }
         }
+
+        async function handleUploadTugas(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-tugas');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...`;
+
+            try {
+                const keterangan = document.getElementById('tugas-keterangan').value;
+                const catatan = document.getElementById('tugas-catatan').value;
+                const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                const res = await fetchGitHubFile('tugas.json');
+                const currentData = Array.isArray(res.data) ? res.data : [];
+                
+                currentData.unshift({ keterangan, catatan, tanggal });
+                await saveGitHubFile('tugas.json', currentData, res.sha, 'Tambah keterangan tugas');
+
+                document.getElementById('form-tugas').reset();
+                await loadAllData();
+                showAlert('Keterangan tugas berhasil disimpan ke GitHub!');
+            } catch (err) {
+                showAlert(err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Simpan ke GitHub`;
+            }
+        }
+
+        // Muat data saat halaman dibuka
+        window.onload = loadAllData;
     </script>
 </body>
 </html>
